@@ -18,9 +18,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        print("====== MainWindow V0.4 已加载 ======")
+        print("====== MainWindow V0.5.3 已加载 ======")
 
-        self.setWindowTitle("微信消息助手 V0.4")
+        self.setWindowTitle("微信消息助手 V0.5.3")
         self.resize(1200, 700)
 
         # ==========================
@@ -65,13 +65,25 @@ class MainWindow(QMainWindow):
             "font-size:22px;font-weight:bold;"
         )
 
+        header_layout = QHBoxLayout()
+        header_layout.addWidget(title)
+        header_layout.addStretch()
+
+        self.message_count_label = QLabel("消息数量: 0")
+        self.message_count_label.setStyleSheet("color:#666666;")
+
+        self.refresh_message_button = QPushButton("🔄 刷新消息")
+
+        header_layout.addWidget(self.message_count_label)
+        header_layout.addWidget(self.refresh_message_button)
+
         self.message_list = QListWidget()
 
         self.test_button = QPushButton(
             "添加测试消息"
         )
 
-        message_layout.addWidget(title)
+        message_layout.addLayout(header_layout)
         message_layout.addWidget(self.message_list)
         message_layout.addWidget(self.test_button)
 
@@ -226,7 +238,7 @@ class MainWindow(QMainWindow):
         # =====================================================
 
         status = QStatusBar()
-        status.showMessage("微信消息助手 V0.4 已启动")
+        status.showMessage("微信消息助手 V0.5.3 已启动")
         self.setStatusBar(status)
 
         # =====================================================

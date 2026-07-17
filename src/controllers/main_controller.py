@@ -21,6 +21,7 @@ class MainController:
 
         # 按钮事件
         self.window.test_button.clicked.connect(self.add_test_message)
+        self.window.refresh_message_button.clicked.connect(self.refresh_message_list)
 
         # 双击消息
         self.window.message_list.itemDoubleClicked.connect(
@@ -72,6 +73,10 @@ class MainController:
             )
 
             self.window.message_list.addItem(text)
+
+        self.window.message_count_label.setText(
+            f"消息数量: {len(messages)}"
+        )
 
     def show_message_detail(self, item):
         """双击查看消息"""
