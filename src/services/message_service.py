@@ -1,5 +1,5 @@
-from models.message import Message
-from services.database_service import DatabaseService
+from src.models.message import Message
+from src.services.database_service import DatabaseService
 
 
 class MessageService:

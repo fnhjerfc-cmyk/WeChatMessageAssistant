@@ -11,6 +11,12 @@ class DatabaseService:
         # 数据库路径
         self.db_path = "data/wechat.db"
 
+        # ===== 调试信息 =====
+        print("=" * 60)
+        print("当前工作目录：", Path.cwd())
+        print("数据库路径：", Path(self.db_path).resolve())
+        print("=" * 60)
+
         # 连接数据库
         self.conn = sqlite3.connect(self.db_path)
 
@@ -20,9 +26,7 @@ class DatabaseService:
     def create_tables(self):
         cursor = self.conn.cursor()
 
-        # ==========================
         # 消息表
-        # ==========================
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS messages(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,9 +41,7 @@ class DatabaseService:
         )
         """)
 
-        # ==========================
         # 微信群表
-        # ==========================
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS groups(
             id INTEGER PRIMARY KEY AUTOINCREMENT,

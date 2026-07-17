@@ -2,8 +2,10 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
     QListWidget,
+    QListWidgetItem,
     QLabel,
     QPushButton,
+    QLineEdit,
     QHBoxLayout,
     QVBoxLayout,
     QStatusBar,
@@ -111,13 +113,36 @@ class MainWindow(QMainWindow):
             "font-size:22px;font-weight:bold;"
         )
 
-        group_info = QLabel(
-            "微信群管理功能开发中..."
-        )
+        # 群组列表
+        self.group_list = QListWidget()
 
+        # 添加群组区域
+        add_group_layout = QHBoxLayout()
+
+        add_group_label = QLabel("群名称:")
+        self.group_name_input = QLineEdit()
+        self.group_name_input.setPlaceholderText("输入群名称")
+
+        remark_label = QLabel("备注:")
+        self.group_remark_input = QLineEdit()
+        self.group_remark_input.setPlaceholderText("输入群备注（可选）")
+
+        self.add_group_button = QPushButton("添加群")
+
+        add_group_layout.addWidget(add_group_label)
+        add_group_layout.addWidget(self.group_name_input)
+        add_group_layout.addWidget(remark_label)
+        add_group_layout.addWidget(self.group_remark_input)
+        add_group_layout.addWidget(self.add_group_button)
+
+        # 删除群组按钮
+        self.delete_group_button = QPushButton("删除选中的群")
+
+        # 布局组合
         group_layout.addWidget(group_title)
-        group_layout.addWidget(group_info)
-        group_layout.addStretch()
+        group_layout.addWidget(self.group_list)
+        group_layout.addLayout(add_group_layout)
+        group_layout.addWidget(self.delete_group_button)
 
         self.pages.addWidget(page_group)
                 # =====================================================

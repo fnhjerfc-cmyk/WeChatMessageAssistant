@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from services.database_service import DatabaseService
+from src.services.database_service import DatabaseService
 
 
 class GroupService:

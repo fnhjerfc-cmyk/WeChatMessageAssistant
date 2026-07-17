@@ -1,6 +1,4 @@
-from src.main import app, window
-import sys
+from src.main import main
 
-
-window.show()
-sys.exit(app.exec())
+if __name__ == "__main__":
+    main()
