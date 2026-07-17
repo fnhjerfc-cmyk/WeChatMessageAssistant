@@ -22,6 +22,9 @@ class MainController:
         # 按钮事件
         self.window.test_button.clicked.connect(self.add_test_message)
         self.window.refresh_message_button.clicked.connect(self.refresh_message_list)
+        self.window.delete_message_button.clicked.connect(
+            self.delete_selected_message
+        )
 
         # 双击消息
         self.window.message_list.itemDoubleClicked.connect(
@@ -77,6 +80,50 @@ class MainController:
         self.window.message_count_label.setText(
             f"消息数量: {len(messages)}"
         )
+
+    def delete_selected_message(self):
+        """删除选中的消息"""
+
+        current_item = self.window.message_list.currentItem()
+
+        if not current_item:
+            QMessageBox.warning(
+                self.window,
+                "提示",
+                "请选择要删除的消息"
+            )
+            return
+
+        current_row = self.window.message_list.row(current_item)
+
+        messages = self.message_service.get_all_messages()
+
+        if current_row < 0 or current_row >= len(messages):
+            QMessageBox.warning(
+                self.window,
+                "错误",
+                "消息索引错误"
+            )
+            return
+
+        message = messages[current_row]
+        message_id = message.id
+
+        reply = QMessageBox.question(
+            self.window,
+            "确认删除",
+            "确定删除这条消息吗？",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            self.database.delete_message(message_id)
+            self.refresh_message_list()
+            QMessageBox.information(
+                self.window,
+                "成功",
+                "消息删除成功"
+            )
 
     def show_message_detail(self, item):
         """双击查看消息"""

@@ -166,6 +166,19 @@ class DatabaseService:
         self.conn.commit()
 
     # ==========================
+    # 删除消息
+    # ==========================
+    def delete_message(self, message_id):
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+        DELETE FROM messages
+        WHERE id = ?
+        """, (message_id,))
+
+        self.conn.commit()
+
+    # ==========================
     # 关闭数据库
     # ==========================
     def close(self):

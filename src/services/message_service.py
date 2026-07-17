@@ -33,6 +33,7 @@ class MessageService:
 
         cursor.execute("""
             SELECT
+                id,
                 group_name,
                 sender,
                 content,
@@ -47,10 +48,11 @@ class MessageService:
 
         for row in rows:
             message = Message(
-                group_name=row[0],
-                sender=row[1],
-                content=row[2],
-                receive_time=row[3]
+                id=row[0],
+                group_name=row[1],
+                sender=row[2],
+                content=row[3],
+                receive_time=row[4]
             )
 
             messages.append(message)

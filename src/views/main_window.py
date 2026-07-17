@@ -73,9 +73,11 @@ class MainWindow(QMainWindow):
         self.message_count_label.setStyleSheet("color:#666666;")
 
         self.refresh_message_button = QPushButton("🔄 刷新消息")
+        self.delete_message_button = QPushButton("🗑 删除消息")
 
         header_layout.addWidget(self.message_count_label)
         header_layout.addWidget(self.refresh_message_button)
+        header_layout.addWidget(self.delete_message_button)
 
         self.message_list = QListWidget()
 

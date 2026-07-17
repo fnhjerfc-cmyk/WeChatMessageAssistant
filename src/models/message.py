@@ -5,6 +5,7 @@ from dataclasses import dataclass
 class Message:
     """微信消息模型"""
 
+    id: int
     group_name: str
     sender: str
     content: str
