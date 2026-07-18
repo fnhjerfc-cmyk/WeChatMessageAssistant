@@ -58,3 +58,39 @@ class MessageService:
             messages.append(message)
 
         return messages
+
+    def search_messages(self, keyword):
+        cursor = self.database.conn.cursor()
+
+        search_pattern = f"%{keyword}%"
+
+        cursor.execute("""
+            SELECT
+                id,
+                group_name,
+                sender,
+                content,
+                receive_time
+            FROM messages
+            WHERE group_name LIKE ?
+                OR sender LIKE ?
+                OR content LIKE ?
+            ORDER BY id DESC
+        """, (search_pattern, search_pattern, search_pattern))
+
+        rows = cursor.fetchall()
+
+        messages = []
+
+        for row in rows:
+            message = Message(
+                id=row[0],
+                group_name=row[1],
+                sender=row[2],
+                content=row[3],
+                receive_time=row[4]
+            )
+
+            messages.append(message)
+
+        return messages

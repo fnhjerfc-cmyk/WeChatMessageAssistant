@@ -18,9 +18,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        print("====== MainWindow V0.5.3 已加载 ======")
+        print("====== MainWindow V0.5.5 已加载 ======")
 
-        self.setWindowTitle("微信消息助手 V0.5.3")
+        self.setWindowTitle("微信消息助手 V0.5.5")
         self.resize(1200, 700)
 
         # ==========================
@@ -72,10 +72,20 @@ class MainWindow(QMainWindow):
         self.message_count_label = QLabel("消息数量: 0")
         self.message_count_label.setStyleSheet("color:#666666;")
 
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("输入关键词搜索")
+        self.search_input.setFixedWidth(220)
+
+        self.search_button = QPushButton("🔍 搜索")
+        self.clear_search_button = QPushButton("✖ 清空")
+
         self.refresh_message_button = QPushButton("🔄 刷新消息")
         self.delete_message_button = QPushButton("🗑 删除消息")
 
         header_layout.addWidget(self.message_count_label)
+        header_layout.addWidget(self.search_input)
+        header_layout.addWidget(self.search_button)
+        header_layout.addWidget(self.clear_search_button)
         header_layout.addWidget(self.refresh_message_button)
         header_layout.addWidget(self.delete_message_button)
 
@@ -240,7 +250,7 @@ class MainWindow(QMainWindow):
         # =====================================================
 
         status = QStatusBar()
-        status.showMessage("微信消息助手 V0.5.3 已启动")
+        status.showMessage("微信消息助手 V0.5.5 已启动")
         self.setStatusBar(status)
 
         # =====================================================

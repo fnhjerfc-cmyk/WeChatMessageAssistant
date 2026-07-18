@@ -32,3 +32,19 @@
 □ 数据库中的消息被删除
 □ 消息列表自动刷新
 □ 消息数量自动更新
+# V0.5.5
+
+目标：
+- 消息搜索功能
+
+功能：
+- 按发送人搜索
+- 按群名称搜索
+- 按消息内容搜索
+- 实时过滤消息
+- 清空搜索恢复全部消息
+
+预计修改文件：
+- src/views/main_window.py
+- src/controllers/main_controller.py
+- src/services/message_service.py

@@ -25,6 +25,9 @@ class MainController:
         self.window.delete_message_button.clicked.connect(
             self.delete_selected_message
         )
+        self.window.search_button.clicked.connect(self.search_messages)
+        self.window.clear_search_button.clicked.connect(self.clear_search)
+        self.window.search_input.returnPressed.connect(self.search_messages)
 
         # 双击消息
         self.window.message_list.itemDoubleClicked.connect(
@@ -46,18 +49,32 @@ class MainController:
         self.refresh_group_list()
 
     def add_test_message(self):
-        """添加一条测试消息"""
+        """按顺序循环添加测试消息，便于搜索功能测试"""
+
+        test_messages = [
+            ("测试群", "张三", "欢迎使用微信消息助手！"),
+            ("开发群", "李四", "今天完成 V0.5.5"),
+            ("产品群", "王五", "下午三点开会"),
+            ("运维群", "赵六", "服务器正常运行")
+        ]
+
+        if not hasattr(self, "_test_message_index"):
+            self._test_message_index = 0
+
+        group_name, sender, content = test_messages[self._test_message_index]
 
         self.message_service.add_message(
-            group_name="测试群",
-            sender="张三",
-            content="欢迎使用微信消息助手！",
+            group_name=group_name,
+            sender=sender,
+            content=content,
             receive_time="22:00"
         )
 
+        self._test_message_index = (self._test_message_index + 1) % len(test_messages)
+
         self.refresh_message_list()
 
-        self.logger.info("添加了一条测试消息")
+        self.logger.info(f"添加了一条测试消息: {group_name}/{sender}/{content}")
 
     def refresh_message_list(self):
         """刷新消息列表"""
@@ -80,6 +97,34 @@ class MainController:
         self.window.message_count_label.setText(
             f"消息数量: {len(messages)}"
         )
+
+    def search_messages(self):
+        """根据关键词搜索消息并刷新列表"""
+
+        keyword = self.window.search_input.text().strip()
+        messages = self.message_service.search_messages(keyword)
+
+        self.window.message_list.clear()
+
+        for msg in messages:
+            text = (
+                f"{msg.receive_time} "
+                f"【{msg.group_name}】 "
+                f"{msg.sender}："
+                f"{msg.content}"
+            )
+
+            self.window.message_list.addItem(text)
+
+        self.window.message_count_label.setText(
+            f"消息数量: {len(messages)}"
+        )
+
+    def clear_search(self):
+        """清空搜索输入并恢复全部消息列表"""
+
+        self.window.search_input.clear()
+        self.refresh_message_list()
 
     def delete_selected_message(self):
         """删除选中的消息"""
