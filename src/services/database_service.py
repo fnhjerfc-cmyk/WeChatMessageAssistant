@@ -169,14 +169,33 @@ class DatabaseService:
     # 删除消息
     # ==========================
     def delete_message(self, message_id):
-        cursor = self.conn.cursor()
+        return self.delete_messages([message_id])
 
-        cursor.execute("""
-        DELETE FROM messages
-        WHERE id = ?
-        """, (message_id,))
+    def delete_messages(self, message_ids):
+        """在同一个事务中批量删除消息，并返回实际删除数量。"""
 
-        self.conn.commit()
+        unique_ids = list(dict.fromkeys(message_ids))
+
+        if not unique_ids:
+            return 0
+
+        deleted_count = 0
+        batch_size = 900
+
+        with self.conn:
+            for start in range(0, len(unique_ids), batch_size):
+                batch_ids = unique_ids[start:start + batch_size]
+                placeholders = ", ".join("?" for _ in batch_ids)
+                cursor = self.conn.execute(
+                    f"""
+                    DELETE FROM messages
+                    WHERE id IN ({placeholders})
+                    """,
+                    batch_ids
+                )
+                deleted_count += cursor.rowcount
+
+        return deleted_count
 
     # ==========================
     # 关闭数据库

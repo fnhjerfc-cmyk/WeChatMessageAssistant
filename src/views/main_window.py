@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QStatusBar,
     QStackedWidget,
+    QAbstractItemView,
 )
 
 
@@ -18,9 +19,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        print("====== MainWindow V0.5.5 已加载 ======")
+        print("====== MainWindow V0.5.7 已加载 ======")
 
-        self.setWindowTitle("微信消息助手 V0.5.5")
+        self.setWindowTitle("微信消息助手 V0.5.7")
         self.resize(1200, 700)
 
         # ==========================
@@ -81,7 +82,7 @@ class MainWindow(QMainWindow):
         self.sort_button = QPushButton("↓ 最新")
 
         self.refresh_message_button = QPushButton("🔄 刷新消息")
-        self.delete_message_button = QPushButton("🗑 删除消息")
+        self.delete_message_button = QPushButton("🗑 删除选中消息")
 
         header_layout.addWidget(self.message_count_label)
         header_layout.addWidget(self.search_input)
@@ -92,6 +93,9 @@ class MainWindow(QMainWindow):
         header_layout.addWidget(self.delete_message_button)
 
         self.message_list = QListWidget()
+        self.message_list.setSelectionMode(
+            QAbstractItemView.SelectionMode.ExtendedSelection
+        )
 
         self.test_button = QPushButton(
             "添加测试消息"
@@ -252,7 +256,7 @@ class MainWindow(QMainWindow):
         # =====================================================
 
         status = QStatusBar()
-        status.showMessage("微信消息助手 V0.5.5 已启动")
+        status.showMessage("微信消息助手 V0.5.7 已启动")
         self.setStatusBar(status)
 
         # =====================================================

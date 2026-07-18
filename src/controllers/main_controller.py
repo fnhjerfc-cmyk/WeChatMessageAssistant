@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QMessageBox
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QListWidgetItem, QMessageBox
 
 from src.services.logger_service import LoggerService
 from src.services.database_service import DatabaseService
@@ -25,7 +26,7 @@ class MainController:
         self.window.test_button.clicked.connect(self.add_test_message)
         self.window.refresh_message_button.clicked.connect(self.refresh_message_list)
         self.window.delete_message_button.clicked.connect(
-            self.delete_selected_message
+            self.delete_selected_messages
         )
         self.window.search_button.clicked.connect(self.search_messages)
         self.window.clear_search_button.clicked.connect(self.clear_search)
@@ -101,7 +102,9 @@ class MainController:
                 f"{msg.content}"
             )
 
-            self.window.message_list.addItem(text)
+            item = QListWidgetItem(text)
+            item.setData(Qt.ItemDataRole.UserRole, msg.id)
+            self.window.message_list.addItem(item)
 
         self.window.message_count_label.setText(
             f"消息数量: {len(messages)}"
@@ -133,12 +136,12 @@ class MainController:
 
         self.refresh_message_list()
 
-    def delete_selected_message(self):
-        """删除选中的消息"""
+    def delete_selected_messages(self):
+        """批量删除消息列表中选中的消息。"""
 
-        current_item = self.window.message_list.currentItem()
+        selected_items = self.window.message_list.selectedItems()
 
-        if not current_item:
+        if not selected_items:
             QMessageBox.warning(
                 self.window,
                 "提示",
@@ -146,36 +149,49 @@ class MainController:
             )
             return
 
-        current_row = self.window.message_list.row(current_item)
+        message_ids = list(dict.fromkeys(
+            item.data(Qt.ItemDataRole.UserRole)
+            for item in selected_items
+            if item.data(Qt.ItemDataRole.UserRole) is not None
+        ))
 
-        messages = self.message_service.get_all_messages()
-
-        if current_row < 0 or current_row >= len(messages):
+        if not message_ids:
             QMessageBox.warning(
                 self.window,
                 "错误",
-                "消息索引错误"
+                "无法读取选中消息的数据"
             )
             return
 
-        message = messages[current_row]
-        message_id = message.id
+        selected_count = len(message_ids)
 
         reply = QMessageBox.question(
             self.window,
             "确认删除",
-            "确定删除这条消息吗？",
+            f"确定删除选中的 {selected_count} 条消息吗？",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
 
         if reply == QMessageBox.StandardButton.Yes:
-            self.database.delete_message(message_id)
-            self.refresh_message_list()
-            QMessageBox.information(
-                self.window,
-                "成功",
-                "消息删除成功"
-            )
+            try:
+                deleted_count = self.database.delete_messages(message_ids)
+                self.refresh_message_list()
+                self.logger.info(
+                    f"批量删除消息完成：选中 {selected_count} 条，"
+                    f"实际删除 {deleted_count} 条"
+                )
+                QMessageBox.information(
+                    self.window,
+                    "成功",
+                    f"已删除 {deleted_count} 条消息"
+                )
+            except Exception as error:
+                self.logger.error(f"批量删除消息失败：{error}")
+                QMessageBox.critical(
+                    self.window,
+                    "错误",
+                    f"删除消息失败：{error}"
+                )
 
     def show_message_detail(self, item):
         """双击查看消息"""
