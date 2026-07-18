@@ -78,6 +78,7 @@ class MainWindow(QMainWindow):
 
         self.search_button = QPushButton("🔍 搜索")
         self.clear_search_button = QPushButton("✖ 清空")
+        self.sort_button = QPushButton("↓ 最新")
 
         self.refresh_message_button = QPushButton("🔄 刷新消息")
         self.delete_message_button = QPushButton("🗑 删除消息")
@@ -86,6 +87,7 @@ class MainWindow(QMainWindow):
         header_layout.addWidget(self.search_input)
         header_layout.addWidget(self.search_button)
         header_layout.addWidget(self.clear_search_button)
+        header_layout.addWidget(self.sort_button)
         header_layout.addWidget(self.refresh_message_button)
         header_layout.addWidget(self.delete_message_button)
 

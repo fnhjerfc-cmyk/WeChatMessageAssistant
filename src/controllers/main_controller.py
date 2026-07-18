@@ -15,6 +15,8 @@ class MainController:
         self.database = DatabaseService()
         self.message_service = MessageService()
         self.group_service = GroupService()
+        self.sort_desc = True
+        self.current_keyword = ""
 
         # 初始化
         self.initialize()
@@ -28,6 +30,7 @@ class MainController:
         self.window.search_button.clicked.connect(self.search_messages)
         self.window.clear_search_button.clicked.connect(self.clear_search)
         self.window.search_input.returnPressed.connect(self.search_messages)
+        self.window.sort_button.clicked.connect(self.toggle_sort)
 
         # 双击消息
         self.window.message_list.itemDoubleClicked.connect(
@@ -52,22 +55,22 @@ class MainController:
         """按顺序循环添加测试消息，便于搜索功能测试"""
 
         test_messages = [
-            ("测试群", "张三", "欢迎使用微信消息助手！"),
-            ("开发群", "李四", "今天完成 V0.5.5"),
-            ("产品群", "王五", "下午三点开会"),
-            ("运维群", "赵六", "服务器正常运行")
+            ("测试群", "张三", "欢迎使用微信消息助手！", "09:00"),
+            ("开发群", "李四", "今天完成 V0.5.5", "10:30"),
+            ("产品群", "王五", "下午三点开会", "14:20"),
+            ("运维群", "赵六", "服务器正常运行", "18:45")
         ]
 
         if not hasattr(self, "_test_message_index"):
             self._test_message_index = 0
 
-        group_name, sender, content = test_messages[self._test_message_index]
+        group_name, sender, content, receive_time = test_messages[self._test_message_index]
 
         self.message_service.add_message(
             group_name=group_name,
             sender=sender,
             content=content,
-            receive_time="22:00"
+            receive_time=receive_time
         )
 
         self._test_message_index = (self._test_message_index + 1) % len(test_messages)
@@ -81,7 +84,13 @@ class MainController:
 
         self.window.message_list.clear()
 
-        messages = self.message_service.get_all_messages()
+        if self.current_keyword:
+            messages = self.message_service.search_messages(self.current_keyword)
+        else:
+            messages = self.message_service.get_all_messages()
+
+        if not self.sort_desc:
+            messages.reverse()
 
         for msg in messages:
 
@@ -102,28 +111,26 @@ class MainController:
         """根据关键词搜索消息并刷新列表"""
 
         keyword = self.window.search_input.text().strip()
-        messages = self.message_service.search_messages(keyword)
-
-        self.window.message_list.clear()
-
-        for msg in messages:
-            text = (
-                f"{msg.receive_time} "
-                f"【{msg.group_name}】 "
-                f"{msg.sender}："
-                f"{msg.content}"
-            )
-
-            self.window.message_list.addItem(text)
-
-        self.window.message_count_label.setText(
-            f"消息数量: {len(messages)}"
-        )
+        self.current_keyword = keyword
+        self.refresh_message_list()
 
     def clear_search(self):
         """清空搜索输入并恢复全部消息列表"""
 
         self.window.search_input.clear()
+        self.current_keyword = ""
+        self.refresh_message_list()
+
+    def toggle_sort(self):
+        """切换消息排序按钮状态"""
+
+        self.sort_desc = not self.sort_desc
+
+        if self.sort_desc:
+            self.window.sort_button.setText("↓ 最新")
+        else:
+            self.window.sort_button.setText("↑ 最早")
+
         self.refresh_message_list()
 
     def delete_selected_message(self):

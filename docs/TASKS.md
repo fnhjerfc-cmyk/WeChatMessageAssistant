@@ -48,3 +48,15 @@
 - src/views/main_window.py
 - src/controllers/main_controller.py
 - src/services/message_service.py
+# V0.5.6
+
+目标：
+消息排序
+
+功能：
+
+- 默认按最新排序
+- 支持切换最早/最新
+- 搜索结果支持排序
+- 不修改数据库结构
+- 不修改 MessageService
