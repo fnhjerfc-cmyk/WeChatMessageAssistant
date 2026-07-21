@@ -39,7 +39,7 @@ class MessageService:
                 content,
                 receive_time
             FROM messages
-            ORDER BY id DESC
+            ORDER BY receive_time DESC, id DESC
         """)
 
         rows = cursor.fetchall()
@@ -89,7 +89,7 @@ class MessageService:
             WHERE group_name LIKE ?
                 OR sender LIKE ?
                 OR content LIKE ?
-            ORDER BY id DESC
+            ORDER BY receive_time DESC, id DESC
         """, (search_pattern, search_pattern, search_pattern))
 
         rows = cursor.fetchall()

@@ -19,9 +19,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        print("====== MainWindow V0.5.8 已加载 ======")
+        print("====== MainWindow V0.5.9 已加载 ======")
 
-        self.setWindowTitle("微信消息助手 V0.5.8")
+        self.setWindowTitle("微信消息助手 V0.5.9")
         self.resize(1200, 700)
 
         # ==========================
@@ -256,7 +256,7 @@ class MainWindow(QMainWindow):
         # =====================================================
 
         status = QStatusBar()
-        status.showMessage("微信消息助手 V0.5.8 已启动")
+        status.showMessage("微信消息助手 V0.5.9 已启动")
         self.setStatusBar(status)
 
         # =====================================================
