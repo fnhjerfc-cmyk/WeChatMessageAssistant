@@ -196,10 +196,37 @@ class MainController:
     def show_message_detail(self, item):
         """双击查看消息"""
 
+        message_id = item.data(Qt.ItemDataRole.UserRole)
+
+        if message_id is None:
+            QMessageBox.information(
+                self.window,
+                "消息详情",
+                "无法读取当前消息的编号。"
+            )
+            return
+
+        message = self.message_service.get_message_by_id(message_id)
+
+        if message is None:
+            QMessageBox.information(
+                self.window,
+                "消息详情",
+                "消息不存在或已被删除。"
+            )
+            return
+
+        detail_text = (
+            f"群名称：{message.group_name}\n"
+            f"发送人：{message.sender}\n"
+            f"接收时间：{message.receive_time}\n"
+            f"内容：{message.content}"
+        )
+
         QMessageBox.information(
             self.window,
             "消息详情",
-            item.text()
+            detail_text
         )
 
     def refresh_group_list(self):

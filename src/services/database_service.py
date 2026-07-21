@@ -113,6 +113,23 @@ class DatabaseService:
 
         return cursor.fetchall()
 
+    def get_message_by_id(self, message_id):
+        cursor = self.conn.cursor()
+
+        cursor.execute("""
+        SELECT
+            id,
+            group_name,
+            sender,
+            content,
+            receive_time
+        FROM messages
+        WHERE id = ?
+        LIMIT 1
+        """, (message_id,))
+
+        return cursor.fetchone()
+
     # ==========================
     # 新增微信群
     # ==========================

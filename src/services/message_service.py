@@ -59,6 +59,20 @@ class MessageService:
 
         return messages
 
+    def get_message_by_id(self, message_id):
+        row = self.database.get_message_by_id(message_id)
+
+        if row is None:
+            return None
+
+        return Message(
+            id=row[0],
+            group_name=row[1],
+            sender=row[2],
+            content=row[3],
+            receive_time=row[4]
+        )
+
     def search_messages(self, keyword):
         cursor = self.database.conn.cursor()
 
